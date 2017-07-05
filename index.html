@@ -1,0 +1,736 @@
+<html>
+
+<head>
+    <title>Dash</title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2017.2.621/styles/kendo.material.mobile.min.css" />
+
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2017.2.621/js/kendo.all.min.js"></script>
+    <style>
+        #treeview .k-sprite {
+            background-image: url("../content/web/treeview/coloricons-sprite.png");
+        }
+
+        .metricSparkLine {
+            width: 100%;
+            height: 40px;
+        }
+
+        #metricCounterAllHostsHistory {
+            height: 230px;
+        }
+
+        #metricCounterPerHostHistory {
+            height: 200px;
+        }
+
+        #metricCounterAllHostsRadial {
+            /*width:250px;*/
+            height: 150px;
+            margin: 0 auto;
+        }
+
+        #hostsBarChart {
+            /*width:350px;*/
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .align-center {
+            text-align: center;
+        }
+
+        h5 {
+            font-weight: bold
+        }
+
+        .metricCounterLatest {
+            text-align: center
+        }
+        /*
+                div[class="row"] {
+                    border: 1px dotted rgba(0, 0, 0, 0.5);
+                }
+
+                div[class^="col-"] {
+                    background-color: rgba(255, 0, 0, 0.2);
+                }*/
+    </style>
+
+</head>
+
+<body>
+    <script id="treeview-template" type="text/kendo-ui-template">
+      
+        
+        <i class="fa #= determineIcon(item.id)#" aria-hidden="true"></i> #: item.text #
+    </script>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2">
+                <div id="treeview"></div>
+            </div>
+            <div class="col-lg-10">
+                
+                <div id="topLevelSection">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Ut Orci[32870]</h1>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="place">Show counts of each metric type for star</div>
+                            <div id="place">Show list of most recent alerts</div>
+                            <div id="place">Show top alerting metrics last 24 hours</div>
+                            <div id="place">Show top alerting hosts last 24 hours</div>                            
+                        </div>
+                    </div>
+                </div>
+
+                <div id="countersListSection">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Ut Orci[32870] > Counters (14)
+                            </h1>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="metricCounterListInfo"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Metric Counter Display-->
+                <div id="metricCounterSection">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1>Ut Orci[32870] > Counters > Bla.Foo.Thing.DoingFailures (Errors)</h1>
+                        </div>
+                    </div>
+
+                    <!--All Servers-->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <h5>Latest All Hosts: 12:15 - 12:20 PM</H5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <div id="metricCounterAllHostsRadial"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 align-center">
+                                    <h6>rate/sec: 3</H6>
+                                </div>
+                                <div class="col-lg-4 align-center">
+                                    <h4>Count: 925</h4>
+                                </div>
+                                <div class="col-lg-4 align-center">
+                                    <h6>rate/min: 185</H6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <h5>All Hosts: 8:20 AM - 12:20 AM</H5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <div id="metricCounterAllHostsHistory"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12" style="height:25px">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <!--Individual Servers-->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <h5>Latest Per Host: 12:15 - 12:20 PM</H5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <div id="hostsBarChart"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <h5>Per Host: 8:20 AM - 12:20 AM</H5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 align-center">
+                                    <div id="metricCounterPerHostHistory"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var fiveMinsForFourHours = ["08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55", "09:00",
+                "09:05", "09:10", "09:15", "09:20", "09:25", "09:30", "09:35", "09:40", "09:45", "09:50", "09:55",
+                "10:00", "10:05", "10:10", "10:15", "10:20", "10:25", "10:30", "10:35", "10:40", "10:45", "10:50",
+                "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35", "11:40", "11:45",
+                "11:50", "11:55", "12:00", "12:05", "12:10", "12:15", "12:20"
+            ];
+
+            var fiveMinsForTwoHours = ["10:20", "10:25", "10:30", "10:35", "10:40", "10:45", "10:50",
+                "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35", "11:40", "11:45",
+                "11:50", "11:55", "12:00", "12:05", "12:10", "12:15", "12:20"
+            ];
+
+            var fiveMinsForOneHour = ["11:20", "11:25", "11:30", "11:35", "11:40", "11:45", "11:50", "11:55", "12:00",
+                "12:05", "12:10", "12:15", "12:20"
+            ];
+
+            var chartColors = ["red", "blue", "green", "yellow", "purple", "orange"];
+
+            var hostNames = ["HostA", "HostB", "HostC", "HostD", "HostE", "HostF"];
+
+            function hideAllSections() {
+                $('#topLevelSection').css("display", "none");
+                $('#metricCounterSection').css("display", "none");
+                $('#countersListSection').css("display", "none");
+            }
+
+            function showCounterMetric() {
+                hideAllSections();
+                $('#metricCounterSection').css("display", "block");
+            }
+
+            function showCountersList() {
+                hideAllSections();
+                $('#countersListSection').css("display", "block");
+            }
+
+            function showTopLevel() {
+                hideAllSections();
+                $('#topLevelSection').css("display", "block");
+            }
+
+            function createMetricCounterAllHistory() {
+                $("#metricCounterAllHostsHistory").kendoChart({
+                    legend: {
+                        visible: true
+                    },
+                    seriesDefaults: {
+                        type: "line",
+                        style: "smooth",
+                        markers: {
+                            visible: false
+                        }
+                    },
+                    series: [{
+                        name: "All Hosts",
+                        color: "blue",
+                        data: [924, 1017, 1006, 927, 926, 1001, 936, 955, 959, 879, 941, 999, 888, 877,
+                            983, 993, 972, 941, 931, 902, 1024, 964, 998, 945, 882, 883, 1023, 907,
+                            1004, 1019, 1004, 955, 884, 989, 954, 922, 1018, 943, 904, 890, 925,
+                            1015, 891, 965, 970, 946, 995, 1007, 963
+                        ]
+                    }, {
+                        name: "Historical",
+                        color: "grey",
+                        data: [1031, 861, 852, 974, 1024, 976, 1040, 964, 985, 1059, 928, 1052, 868,
+                            1030, 1073, 1001, 972, 854, 1035, 961, 1023, 1035, 850, 1025, 927, 961,
+                            919, 1058, 1037, 858, 957, 1073, 959, 1011, 923, 1005, 917, 1072, 1025,
+                            1057, 856, 865, 1010, 885, 852, 1057, 943, 832, 883
+                        ]
+                    }],
+                    valueAxis: {
+                        min: 800,
+                        max: 1125,
+                        line: {
+                            visible: false
+                        },
+                        minorGridLines: {
+                            visible: false
+                        },
+                        labels: {
+                            rotation: "auto"
+                        }
+                    },
+                    categoryAxis: {
+                        categories: fiveMinsForFourHours,
+                        majorGridLines: {
+                            visible: false
+                        },
+                        labels: {
+                            rotation: "-45",
+                            step: 3
+                        }
+                    },
+                    tooltip: {
+                        visible: true,
+                        template: "#= series.name #: #= value #"
+                    }
+                });
+            }
+
+
+            function createMetricCounterPerHostHistoryLineChart() {
+                $("#metricCounterPerHostHistory").kendoChart({
+                    legend: {
+                        visible: true
+                    },
+                    seriesDefaults: {
+                        type: "line",
+                        style: "smooth",
+                        markers: {
+                            visible: false
+                        }
+                    },
+                    seriesColors: chartColors,
+                    series: [{
+                        name: "HostA",
+                        data: [140, 206, 157, 151, 177, 180, 65, 62, 76, 52, 178, 126, 178, 45, 108, 74,
+                            227, 182, 124, 105, 218, 73, 226, 149, 226, 214, 218, 105, 129, 163,
+                            225, 91, 169, 49, 188, 191, 174, 125, 116, 142, 98, 227, 150, 207, 180,
+                            219, 103, 51, 212
+                        ]
+                    }, {
+                        name: "HostB",
+                        data: [199, 147, 79, 52, 220, 111, 72, 222, 119, 177, 91, 100, 124, 188, 95,
+                            123, 67, 163, 137, 218, 117, 99, 137, 65, 135, 172, 202, 115, 217, 53,
+                            137, 75, 116, 224, 45, 152, 56, 175, 50, 73, 125, 217, 110, 92, 210,
+                            160, 105, 52, 117
+                        ]
+                    }, {
+                        name: "HostC",
+                        data: [168, 223, 96, 149, 83, 163, 130, 66, 196, 53, 175, 101, 199, 220, 201,
+                            117, 53, 228, 142, 133, 195, 218, 192, 57, 118, 174, 85, 173, 55, 225,
+                            138, 52, 141, 125, 155, 134, 76, 93, 188, 69, 171, 50, 54, 201, 185,
+                            124, 93, 127, 50
+                        ],
+                    }, {
+                        name: "HostD",
+                        data: [216, 194, 78, 164, 174, 115, 153, 226, 225, 90, 200, 78, 117, 49, 110,
+                            71, 192, 153, 84, 126, 218, 61, 209, 99, 94, 110, 177, 185, 124, 197,
+                            171, 103, 217, 141, 111, 212, 117, 205, 73, 99, 167, 119, 132, 165, 141,
+                            183, 65, 116, 100
+                        ],
+                    }, {
+                        name: "HostE",
+                        data: [75, 57, 54, 120, 104, 171, 224, 229, 215, 115, 167, 178, 182, 58, 74, 69,
+                            64, 153, 153, 146, 164, 140, 47, 162, 56, 126, 162, 174, 131, 156, 135,
+                            210, 107, 143, 109, 201, 87, 94, 146, 135, 54, 176, 83, 72, 226, 154,
+                            185, 50, 96
+                        ],
+                    }, {
+                        name: "HostF",
+                        data: [50, 221, 138, 116, 133, 187, 105, 161, 131, 218, 160, 92, 124, 225, 51,
+                            65, 202, 163, 55, 78, 56, 148, 198, 132, 75, 184, 92, 68, 135, 133, 64,
+                            163, 123, 94, 118, 146, 157, 120, 126, 88, 52, 94, 110, 140, 105, 131,
+                            213, 138, 74
+                        ],
+                    }],
+                    valueAxis: {
+                        line: {
+                            visible: false
+                        },
+                        minorGridLines: {
+                            visible: false
+                        },
+                        labels: {
+                            rotation: "auto"
+                        }
+                    },
+                    categoryAxis: {
+                        categories: fiveMinsForFourHours,
+                        majorGridLines: {
+                            visible: false
+                        },
+                        labels: {
+                            rotation: "-45",
+                            step: 3
+                        }
+                    },
+                    tooltip: {
+                        visible: true,
+                        template: "#= series.name #: #= value #"
+                    }
+                });
+            }
+
+            function createMetricCounterAllHostsGauge() {
+
+                $("#metricCounterAllHostsRadial").kendoRadialGauge({
+
+                    pointer: {
+                        value: 925
+                    },
+
+                    scale: {
+                        minorUnit: 50,
+                        startAngle: 0,
+                        endAngle: 180,
+                        min: 650,
+                        max: 1050,
+                        ranges: [{
+                            from: 900,
+                            to: 990,
+                            color: "green"
+                        }]
+                    }
+                });
+            }
+
+            function createMetricCounterPerHostsBarChart() {
+                $("#hostsBarChart").kendoChart({
+                    legend: {
+                        visible: false
+                    },
+                    seriesDefaults: {
+                        type: "bar"
+                    },
+                    series: [{
+                            name: "HostA",
+                            data: [109]
+                        },
+                        {
+                            name: "HostB",
+                            data: [56]
+                        },
+                        {
+                            name: "HostC",
+                            data: [219]
+                        },
+                        {
+                            name: "HostD",
+                            data: [145]
+                        },
+                        {
+                            name: "HostE",
+                            data: [87]
+                        },
+                        {
+                            name: "HostF",
+                            data: [187]
+                        }
+                    ],
+                    seriesColors: chartColors,
+                    valueAxis: {
+                        line: {
+                            visible: false
+                        },
+                        minorGridLines: {
+                            visible: true
+                        },
+                        labels: {
+                            rotation: "auto"
+                        }
+                    },
+                    categoryAxis: {
+                        majorGridLines: {
+                            visible: false
+                        }
+                    },
+                    tooltip: {
+                        visible: true,
+                        template: "#= series.name #: #= value #"
+                    }
+                });
+            }
+
+            function generateLoremIpsum(wordCount, separator) {
+                var words = ['lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit', 'curabitur',
+                    'vel', 'hendrerit', 'libero', 'eleifend', 'blandit', 'nunc', 'ornare', 'odio', 'ut', 'orci',
+                    'gravida', 'imperdiet', 'nullam', 'purus', 'lacinia', 'a', 'pretium', 'quis', 'congue',
+                    'praesent', 'sagittis', 'laoreet', 'auctor', 'mauris', 'non', 'velit', 'eros', 'dictum',
+                    'proin', 'accumsan', 'sapien', 'nec', 'massa', 'volutpat', 'venenatis', 'sed', 'eu', 'molestie',
+                    'lacus', 'quisque', 'porttitor', 'ligula', 'dui', 'mollis', 'tempus', 'at', 'magna',
+                    'vestibulum', 'turpis', 'ac', 'diam', 'tincidunt', 'id', 'condimentum', 'enim', 'sodales', 'in',
+                    'hac', 'habitasse', 'platea', 'dictumst', 'aenean', 'neque', 'fusce', 'augue', 'leo', 'eget',
+                    'semper', 'mattis', 'tortor', 'scelerisque', 'nulla', 'interdum', 'tellus', 'malesuada',
+                    'rhoncus', 'porta', 'sem', 'aliquet', 'et', 'nam', 'suspendisse', 'potenti', 'vivamus',
+                    'luctus', 'fringilla', 'erat', 'donec', 'justo', 'vehicula', 'ultricies', 'varius', 'ante',
+                    'primis', 'faucibus', 'ultrices', 'posuere', 'cubilia', 'curae', 'etiam', 'cursus', 'aliquam',
+                    'quam', 'dapibus', 'nisl', 'feugiat', 'egestas', 'class', 'aptent', 'taciti', 'sociosqu', 'ad',
+                    'litora', 'torquent', 'per', 'conubia', 'nostra', 'inceptos', 'himenaeos', 'phasellus', 'nibh',
+                    'pulvinar', 'vitae', 'urna', 'iaculis', 'lobortis', 'nisi', 'viverra', 'arcu', 'morbi',
+                    'pellentesque', 'metus', 'commodo', 'ut', 'facilisis', 'felis', 'tristique', 'ullamcorper',
+                    'placerat', 'aenean', 'convallis', 'sollicitudin', 'integer', 'rutrum', 'duis', 'est', 'etiam',
+                    'bibendum', 'donec', 'pharetra', 'vulputate', 'maecenas', 'mi', 'fermentum', 'consequat',
+                    'suscipit', 'aliquam', 'habitant', 'senectus', 'netus', 'fames', 'quisque', 'euismod',
+                    'curabitur', 'lectus', 'elementum', 'tempor', 'risus', 'cras'
+                ];
+                var wordCount = (wordCount > words.length) ? (words.length - 1) : wordCount;
+                var extracted = [];
+
+                for (var i = 0; i < wordCount; i++) {
+                    var word = Math.floor(Math.random() * words.length);
+                    extracted[i] = words[word];
+                }
+
+                if (arguments.length == 1) separator = ' '
+                return extracted.join(separator);
+            };
+
+            function generateNumbersWithinRange(numberToGenerate, minNumber, maxNumber) {
+                var newNum = minNumber - 1;
+                var ar = [];
+                while (ar.length < numberToGenerate) {
+                    ar.push(randomWithin(minNumber, maxNumber));
+                }
+                return ar;
+            }
+
+            function randomWithin(minNumber, maxNumber) {
+                var newNum = minNumber - 1;
+                while (newNum < minNumber || newNum > maxNumber) {
+                    newNum = Math.floor((Math.random() * maxNumber) + 1)
+                }
+                return newNum;
+            }
+
+            function MetricListGridData() {
+                this.metricName = generateLoremIpsum(randomWithin(2, 4), '.');
+                this.dataPoints = generateNumbersWithinRange(25, 25, 230);
+                this.latestDataPoint = function () {
+                    return this.dataPoints[this.dataPoints.length - 1];
+                };
+            }
+
+            function createMetricCounterGrid(c) {
+                var cl = [];
+                for (i = 0; i < c; i++) {
+                    cl.push(new MetricListGridData());
+                }
+                cl.sort(function (a, b) {
+                    if (a.metricName < b.metricName) return -1;
+                    if (a.metricName > b.metricName) return 1;
+                    return 0;
+                })
+
+                gridIndex = -1;
+                $("#metricCounterListInfo").kendoGrid({
+                    dataSource: {
+                        data: cl
+                    },
+                    groupable: false,
+                    sortable: false,
+                    columns: [{
+                        template: "<div class='metricName'>#: data.metricName#</div>",
+                        title: "Counter Name"
+                    }, {
+                        width: 100,
+                        template: "<div class='metricCounterLatest'>#= data.latestDataPoint() #</div>",
+                        title: "Latest"
+                    }, {
+                        template: "<div class='metricSparkLine'>#= ++gridIndex #</div>",
+                        title: "Two Hour Trend"
+                    }],
+                    dataBound: function () {
+                        var grid = this;
+                        $(".metricSparkLine").each(function () {
+                            var sl = $(this);
+                            var tr = sl.closest('tr');
+                            var model = grid.dataItem(tr);
+                            sl.kendoSparkline({
+                                series: [{
+                                    color: "blue",
+                                    data: model.dataPoints
+                                }],
+                                categoryAxis: {
+                                    categories: fiveMinsForTwoHours
+                                }
+                            });
+                        })
+                    }
+                });
+
+                return cl;
+            }
+
+            function determineIcon(id){
+                if(!id){
+                    return null;
+                }
+                var pieces = id.toString().split('.');
+                var result = "";
+                if(pieces.length == "1") {
+                        result = "fa-star-o";
+                } else {               
+                    if(pieces[1].substring(0,1) == "1") {
+                        result = "fa-slack";
+                    } else if(pieces[1].substring(0,1) == "2") { 
+                        result = "fa-thermometer-half";
+                    } else {
+                        result = "fa-clock-o";
+                    }
+                }
+                // console.log("determineIcon", pieces, id, result);
+                return result;
+            }
+
+            function NavNode(one, two, three) {
+                if(!two) {
+                    this.id = parseFloat(one);
+                    this.text = generateLoremIpsum(randomWithin(1, 3), ' ') + ' [' + randomWithin(1000, 10000).toString() + ']';
+                    this.items = [];
+                }else{
+                    this.id = parseFloat((one + '.' + two + three));
+                    if(three) {
+                        this.text = generateLoremIpsum(randomWithin(2, 4), '.');
+                    }else{
+                        switch(two){
+                            case 1:
+                                this.text = "Counters";
+                                break;
+                            case 2:
+                                this.text = "Gauges";
+                                break;
+                            case 3:
+                                this.text = "Timers";
+                                break;
+                        }
+                        this.items = [];
+                    }
+                }
+
+                this.expanded = (!two && one == 1 ? true : false);
+            }
+
+            function createNavTreeView() {
+                var ni = [];
+                for(w=1;w<5;w++){
+                    var nn = new NavNode(w, null, null);
+                    for(x=1;x<4;x++){
+                        var nn2 = new NavNode(w, x, null);
+                        var l3c = generateNumbersWithinRange(1,2,9);
+                        for(y=1;y<l3c;y++){
+                            var nn3 = new NavNode(w, x, y);
+                            //console.log(nn3);
+                            nn2.items.push(nn3);
+                        }
+                        nn.items.push(nn2);
+                    }
+                    ni.push(nn);
+                }
+
+                console.log(ni);
+
+                var origItems = [{
+                                id: 1.1,
+                                text: "Counters",
+                                expanded: false,
+                                items: [{
+                                        id: 1.11,
+                                        text: "about.html"
+                                    },
+                                    {
+                                        id: 1.12,
+                                        text: "index.html"
+                                    },
+                                    {
+                                        id: 1.13,
+                                        text: "logo.png"
+                                    }
+                                ]
+                            },
+                            {
+                                id: 1.2,
+                                text: "Timers",
+                                expanded: true,
+                                items: [{
+                                        id: 1.21,
+                                        text: generateLoremIpsum(randomWithin(2, 4), '.')
+                                    },
+                                    {
+                                        id: 1.22,
+                                        text: "Research.pdf"
+                                    },
+                                ]
+                            },
+                            {
+                                id: 1.3,
+                                text: "Gauges",
+                                expanded: true,
+                                items: [{
+                                        id: 1.31,
+                                        text: "February.pdf"
+                                    },
+                                    {
+                                        id: 1.32,
+                                        text: "March.pdf"
+                                    },
+                                    {
+                                        id: 1.33,
+                                        text: "April.pdf"
+                                    }
+                                ]
+                            }
+                        ];
+
+                $("#treeview").kendoTreeView({
+                    template: kendo.template($("#treeview-template").html()),
+                    dataSource: ni,
+                    select: function (e) {
+                        var nodeText = this.text(e.node);
+                        console.log("Selecting: " + nodeText);
+                        if(nodeText.substring(nodeText.length - 1) == "]"){
+                            showTopLevel();
+                        }else if(["Counters", "Gauges", "Timers"].indexOf(nodeText) >= 0) {
+                            showCountersList();
+                        }else {
+                            showCounterMetric();
+                        }
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                createNavTreeView();
+                createMetricCounterAllHistory();
+                createMetricCounterAllHostsGauge();
+                createMetricCounterPerHostHistoryLineChart();
+                createMetricCounterPerHostsBarChart();
+                createMetricCounterGrid(14);
+                showTopLevel();
+
+            });
+        </script>
+</body>
+
+</html>
